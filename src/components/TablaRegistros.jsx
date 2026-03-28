@@ -32,8 +32,15 @@ export function ModalDetalleRegistro({ registro: r, onClose, localidades = [] })
           ["Fecha Ejecución", fmt(fullReg.fecha_ejec)],
           ["Fecha Carga", fmtDT(fullReg.fecha_carga)],
           ["Cargado por", fullReg.cargado_por_nombre || fullReg.cargado_por],
-          ["Evidencia", fullReg.evidencia_url || "-"],
-        ].map(([k, v]) => (
+          fullReg.evidencia_url && ["Evidencia",
+            <a href={fullReg.evidencia_url} target="_blank" rel="noopener noreferrer" title="Ver evidencia" style={{ color: C.azul, display: "inline-flex", alignItems: "center", cursor: "pointer" }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </a>
+          ],
+        ].filter(Boolean).map(([k, v]) => (
           <div key={k}>
             <div style={{ fontSize: 11, fontWeight: 700, color: C.grisTexto, marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.05em" }}>{k}</div>
             <div style={{ fontSize: 13, color: C.texto, fontWeight: 500 }}>{v}</div>
