@@ -26,18 +26,18 @@ export default function VistaLocalidad({ localidadId, registros, usuario, setVis
 
   return (
     <div>
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
-        <button onClick={() => setVista("dashboard")} style={{ padding: "8px 16px", background: C.gris, border: `1px solid ${C.grisMedio}`, borderRadius: 10, cursor: "pointer", fontSize: 13, color: C.grisTexto, fontWeight: 600 }}>← Volver</button>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>        
+        <button onClick={() => setVista("dashboard")} style={{ padding: "8px 16px", background: C.azul, border: `1px solid ${C.grisMedio}`, borderRadius: 10, cursor: "pointer", fontSize: 13, color: C.blanco, fontWeight: 600 }}>← Volver</button>
         <div>
           <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: C.texto, letterSpacing: "-0.03em" }}>📍 {locData.nombre}</h1>
           <p style={{ margin: 0, fontSize: 13, color: C.grisTexto }}>Junta de Saneamiento de {locData.nombre}</p>
-        </div>
+        </div>        
       </div>
 
       <div style={{ display: "flex", gap: 14, marginBottom: 24, flexWrap: "wrap" }}>
         <StatCard icon="🎯" label="Meta" value={fmt(locData.previstas)} color={C.texto} />
         <StatCard icon="🔗" label="Conectados" value={fmt(conn)} sub="Solo validados" color={C.azul} />
-        <StatCard icon="🏠" label="Adecuaciones" value={fmt(adeq)} color="#B45309" />
+        {/* <StatCard icon="🏠" label="Adecuaciones" value={fmt(adeq)} color="#B45309" /> */}
         <StatCard icon="🏗️" label="CI Construidas" value={fmt(locData.ci)} color={C.grisTexto} />
         <StatCard icon="⏳" label="Pendientes" value={locData.pendientes || 0} color={C.amarillo} />
         <StatCard icon="📉" label="Brecha" value={fmt(locData.brecha || 0)} color={C.rojo} />

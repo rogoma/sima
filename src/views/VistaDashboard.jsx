@@ -40,7 +40,7 @@ export default function VistaDashboard({ usuario, localidades, registros, setVis
 
       <div style={{ display: "flex", gap: 16, marginBottom: 24, flexWrap: "wrap" }}>
         <StatCard icon="🔗" label="Conectados a la Red" value={fmt(d.conectados_total)} sub={`Meta: ${fmt(d.previstas_total)}`} color={C.azul} />
-        <StatCard icon="🏠" label="Adecuaciones Intraprediales" value={fmt(d.adecuaciones_total)} color={C.azulMedio} />
+        {/* <StatCard icon="🏠" label="Adecuaciones Intraprediales" value={fmt(d.adecuaciones_total)} color={C.azulMedio} /> */}
         <StatCard icon="⏳" label="Pendientes Validación" value={fmt(d.pendientes)} color={C.amarillo} />
         <StatCard icon="📈" label="Avance del Programa" value={`${d.avance_pct}%`} sub={`${fmt(d.brecha)} en brecha`} color={C.verde} />
       </div>
@@ -62,9 +62,12 @@ export default function VistaDashboard({ usuario, localidades, registros, setVis
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
             <thead>
               <tr style={{ backgroundColor: C.gris }}>
-                {["Localidad", "Previstas", "Conectados", "Adecuaciones", "CI Construidas", "Avance", "Brecha", ""].map((h) => (
+                {["Localidad", "Previstas", "Conectados", "CI Construidas", "Avance", "Brecha", ""].map((h) => (
                   <th key={h} style={{ padding: "10px 14px", textAlign: "left", fontWeight: 700, color: C.grisTexto, fontSize: 12, borderBottom: `1px solid ${C.grisMedio}`, whiteSpace: "nowrap" }}>{h}</th>
                 ))}
+                {/* {["Localidad", "Previstas", "Conectados", "Adecuaciones", "CI Construidas", "Avance", "Brecha", ""].map((h) => (
+                  <th key={h} style={{ padding: "10px 14px", textAlign: "left", fontWeight: 700, color: C.grisTexto, fontSize: 12, borderBottom: `1px solid ${C.grisMedio}`, whiteSpace: "nowrap" }}>{h}</th>
+                ))} */}
               </tr>
             </thead>
             <tbody>
@@ -79,7 +82,7 @@ export default function VistaDashboard({ usuario, localidades, registros, setVis
                     <td style={{ padding: "12px 14px", fontWeight: 700, color: C.texto }}>{loc.nombre}</td>
                     <td style={{ padding: "12px 14px", color: C.grisTexto, fontWeight: 600 }}>{fmt(loc.previstas)}</td>
                     <td style={{ padding: "12px 14px", fontWeight: 700, color: C.azul }}>{fmt(conn)}</td>
-                    <td style={{ padding: "12px 14px", color: "#B45309", fontWeight: 600 }}>{fmt(adeq)}</td>
+                    {/* <td style={{ padding: "12px 14px", color: "#B45309", fontWeight: 600 }}>{fmt(adeq)}</td> */}
                     <td style={{ padding: "12px 14px", color: C.grisTexto }}>{fmt(loc.ci)}</td>
                     <td style={{ padding: "12px 14px", minWidth: 120 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>

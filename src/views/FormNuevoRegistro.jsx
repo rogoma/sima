@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { C } from "../styles/colors";
 import { crearRegistro, corregirRegistro, subirEvidencia } from "../services/api";
 import { fmt } from "../services/helpers";
@@ -27,6 +27,27 @@ export default function FormNuevoRegistro({ usuario, registros, onGuardar, onCan
   const fileInputRef = useRef(null);
 
   const setF = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+
+  useEffect(() => {
+    if (!form.manzana.trim() || !form.lote.trim() || !form.localidad_id) {
+      setAlertaDup(null);
+      setBloqueoDup(false);
+      return;
+    }
+    const dup = registros.find((r) =>
+      String(r.localidad_id) === String(form.localidad_id) &&
+      r.manzana?.trim().toLowerCase() === form.manzana.trim().toLowerCase() &&
+      r.lote?.trim().toLowerCase() === form.lote.trim().toLowerCase() &&
+      (!esEdicion || r.id !== registroEditar.id)
+    );
+    if (dup) {
+      setAlertaDup({ tipo: "bloqueo", msg: `Manzana ${form.manzana} / Lote ${form.lote} ya está registrado en ${locNombre(form.localidad_id)} (Titular: ${dup.titular}).` });
+      setBloqueoDup(true);
+    } else {
+      setAlertaDup(null);
+      setBloqueoDup(false);
+    }
+  }, [form.manzana, form.lote, form.localidad_id]);
   const locNombre = (id) => localidades.find((l) => l.id === id)?.nombre || id;
   const modNombre = (id) => modalidades.find((m) => m.id === id)?.nombre || id;
   const modCat = (id) => modalidades.find((m) => m.id === id)?.cat || "";
@@ -49,7 +70,9 @@ export default function FormNuevoRegistro({ usuario, registros, onGuardar, onCan
       if (!form.titular.trim()) e.titular = "Ingrese el nombre.";
       if (!form.ci.trim()) e.ci = "Ingrese la cédula.";
       if (!form.manzana.trim()) e.manzana = "Ingrese manzana.";
+      else if (form.manzana.trim().length < 2) e.manzana = "Mínimo 2 dígitos.";
       if (!form.lote.trim()) e.lote = "Ingrese lote.";
+      else if (form.lote.trim().length < 2) e.lote = "Mínimo 2 dígitos.";
     }
     if (p === 2) { if (!form.modalidad_id) e.modalidad_id = "Seleccione modalidad."; if (!form.fecha_ejec) e.fecha_ejec = "Ingrese fecha."; }
     if (p === 3) { if (!form.evidencia_url) e.evidencia_url = "Adjunte evidencia."; }
@@ -109,10 +132,10 @@ export default function FormNuevoRegistro({ usuario, registros, onGuardar, onCan
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
               <div style={{ gridColumn: "1/-1" }}><Campo label="Localidad" required error={errores.localidad_id}><Select value={form.localidad_id} onChange={(e) => setF("localidad_id", e.target.value)} disabled={locales.length === 1}><option value="">Seleccionar...</option>{locales.map((l) => <option key={l.id} value={l.id}>{l.nombre}</option>)}</Select></Campo></div>
               <div style={{ gridColumn: "1/-1" }}><Campo label="Nombre del titular" required error={errores.titular}><Input value={form.titular} onChange={(e) => setF("titular", e.target.value)} placeholder="Ej: Juan Ramírez" /></Campo></div>
-              <Campo label="Cédula de identidad" required error={errores.ci}><Input value={form.ci} onChange={(e) => setF("ci", e.target.value)} placeholder="Ej: 3.456.789" /></Campo>
+              <Campo label="Cédula de identidad" required error={errores.ci}><Input value={form.ci} onChange={(e) => { const digits = e.target.value.replace(/\D/g, ""); const formatted = digits.replace(/\B(?=(\d{3})+(?!\d))/g, "."); setF("ci", formatted); }} placeholder="Ej: 3.456.789" /></Campo>
               <Campo label="Celular"><Input value={form.celular} onChange={(e) => setF("celular", e.target.value)} placeholder="Ej: 0981-123456" /></Campo>
-              <Campo label="Manzana" required error={errores.manzana}><Input value={form.manzana} onChange={(e) => setF("manzana", e.target.value)} placeholder="Ej: 12" /></Campo>
-              <Campo label="Lote" required error={errores.lote}><Input value={form.lote} onChange={(e) => setF("lote", e.target.value)} placeholder="Ej: 05" /></Campo>
+              <Campo label="Manzana" required error={errores.manzana}><Input value={form.manzana} onChange={(e) => setF("manzana", e.target.value)} onBlur={() => { if (form.manzana.trim().length === 1) setErrores((prev) => ({ ...prev, manzana: "Mínimo 2 dígitos." })); else setErrores((prev) => ({ ...prev, manzana: undefined })); }} placeholder="Ej: 12" /></Campo>
+              <Campo label="Lote" required error={errores.lote}><Input value={form.lote} onChange={(e) => setF("lote", e.target.value)} onBlur={() => { if (form.lote.trim().length === 1) setErrores((prev) => ({ ...prev, lote: "Mínimo 2 dígitos." })); else setErrores((prev) => ({ ...prev, lote: undefined })); }} placeholder="Ej: 05" /></Campo>
             </div>
           </div>
         )}
@@ -121,16 +144,23 @@ export default function FormNuevoRegistro({ usuario, registros, onGuardar, onCan
             <h3 style={{ fontSize: 16, fontWeight: 700, color: C.texto, margin: "0 0 20px" }}>Paso 2 — Tipo de Registro y Estrategia</h3>
             <Campo label="Tipo de registro" required>
               <div style={{ display: "flex", gap: 12 }}>
-                {[{ v: "conectado", l: "🔗 Conectado a la Red", d: "Empalme al colector público completo", s: "✓ Cuenta para el indicador", sc: C.verde }, { v: "adecuacion", l: "🏠 Adecuación Intrapredial", d: "Instalación interna sin empalme", s: "No cuenta como conectado aún", sc: C.grisTexto }].map((opt) => (
-                  <div key={opt.v} onClick={() => setF("tipo", opt.v)} style={{ flex: 1, padding: "16px", border: `2px solid ${form.tipo === opt.v ? C.azul : C.grisBorde}`, borderRadius: 12, cursor: "pointer", background: form.tipo === opt.v ? C.azulSuave : C.blanco, transition: "all 0.2s" }}>
+                {[{ v: "conectado", l: "🔗 Conectado a la Red", d: "Empalme al colector público completo", s: "✓ Cuenta para el indicador", sc: C.verde } 
+                ].map((opt) => (<div key={opt.v} onClick={() => setF("tipo", opt.v)} style={{ width: "calc(25% - 6px)", padding: "16px", border: `2px solid ${form.tipo === opt.v ? C.azul : C.grisBorde}`, borderRadius: 12, cursor: "pointer", background: form.tipo === opt.v ? C.azulSuave : C.blanco, transition: "all 0.2s" }}>
                     <div style={{ fontSize: 14, fontWeight: 700, color: form.tipo === opt.v ? C.azul : C.texto }}>{opt.l}</div>
                     <div style={{ fontSize: 12, color: C.grisTexto, marginTop: 4 }}>{opt.d}</div>
                     <div style={{ marginTop: 6, fontSize: 11, fontWeight: 700, color: opt.sc }}>{opt.s}</div>
                   </div>
                 ))}
+                {/* {[{ v: "conectado", l: "🔗 Conectado a la Red", d: "Empalme al colector público completo", s: "✓ Cuenta para el indicador", sc: C.verde }, { v: "adecuacion", l: "🏠 Adecuación Intrapredial", d: "Instalación interna sin empalme", s: "No cuenta como conectado aún", sc: C.grisTexto }].map((opt) => (
+                  <div key={opt.v} onClick={() => setF("tipo", opt.v)} style={{ flex: 1, padding: "16px", border: `2px solid ${form.tipo === opt.v ? C.azul : C.grisBorde}`, borderRadius: 12, cursor: "pointer", background: form.tipo === opt.v ? C.azulSuave : C.blanco, transition: "all 0.2s" }}>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: form.tipo === opt.v ? C.azul : C.texto }}>{opt.l}</div>
+                    <div style={{ fontSize: 12, color: C.grisTexto, marginTop: 4 }}>{opt.d}</div>
+                    <div style={{ marginTop: 6, fontSize: 11, fontWeight: 700, color: opt.sc }}>{opt.s}</div>
+                  </div>
+                ))} */}
               </div>
             </Campo>
-            <Campo label="Fecha de ejecución" required error={errores.fecha_ejec}><Input type="date" value={form.fecha_ejec} onChange={(e) => setF("fecha_ejec", e.target.value)} style={{ maxWidth: 240 }} /></Campo>
+            <Campo label="Fecha de ejecución" required error={errores.fecha_ejec}><Input type="date" value={form.fecha_ejec} max={new Date().toISOString().split("T")[0]} onChange={(e) => setF("fecha_ejec", e.target.value)} style={{ maxWidth: 240 }} /></Campo>
             <Campo label="Modalidad / Estrategia" required error={errores.modalidad_id}>
               <Select value={form.modalidad_id} onChange={(e) => setF("modalidad_id", e.target.value)}>
                 <option value="">Seleccionar...</option>
@@ -179,7 +209,7 @@ export default function FormNuevoRegistro({ usuario, registros, onGuardar, onCan
 
         {/* Navigation */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 28, paddingTop: 20, borderTop: `1px solid ${C.grisMedio}` }}>
-          <button onClick={paso === 1 ? onCancel : anterior} style={{ padding: "10px 22px", background: C.gris, border: `1px solid ${C.grisMedio}`, borderRadius: 10, cursor: "pointer", fontSize: 14, color: C.grisTexto, fontWeight: 600 }}>{paso === 1 ? "Cancelar" : "← Anterior"}</button>
+          <button onClick={paso === 1 ? onCancel : anterior} style={{ padding: "10px 22px", background: C.azul, border: `1px solid ${C.grisMedio}`, borderRadius: 10, cursor: "pointer", fontSize: 14, color: C.blanco, fontWeight: 600 }}>{paso === 1 ? "Cancelar" : "← Anterior"}</button>
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <span style={{ fontSize: 12, color: C.grisTexto }}>Paso {paso} de 4</span>
             {paso < 4 ? (
