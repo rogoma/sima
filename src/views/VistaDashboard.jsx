@@ -56,7 +56,7 @@ export default function VistaDashboard({ usuario, localidades, registros, setVis
       <div style={{ background: C.blanco, borderRadius: 14, border: `1px solid ${C.grisMedio}`, overflow: "hidden", boxShadow: "0 1px 6px rgba(18,85,161,0.04)" }}>
         <div style={{ padding: "16px 20px", borderBottom: `1px solid ${C.grisMedio}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: C.texto }}>Estado por Localidad</h3>
-          <span style={{ fontSize: 12, color: C.grisTexto }}>Solo se contabilizan registros <strong>validados</strong></span>
+          <span style={{ fontSize: 12, color: C.grisTexto }}>Sólo se contabilizan registros <strong>validados</strong></span>
         </div>
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>

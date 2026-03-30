@@ -46,7 +46,7 @@ export default function LoginScreen({ onLogin }) {
           onMouseEnter={(e) => { if (!loading) { e.currentTarget.style.transform = "translateY(-1px)"; e.currentTarget.style.boxShadow = "0 8px 24px rgba(18,85,161,0.4)"; } }}
           onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(18,85,161,0.3)"; }}
         >
-          {loading ? "Ingresando..." : "Iniciar sesión →"}
+          {loading ? "Ingresando..." : "Iniciar sesión"}
         </button>
         {/* <div style={{ marginTop: 20, padding: "12px 16px", background: C.azulSuave, borderRadius: 10, border: `1px solid ${C.grisMedio}` }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: C.azul, marginBottom: 4 }}>Usuarios de prueba</div>

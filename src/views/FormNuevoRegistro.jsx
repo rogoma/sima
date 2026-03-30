@@ -97,9 +97,9 @@ export default function FormNuevoRegistro({ usuario, registros, onGuardar, onCan
 
   return (
     <div>
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
-        <button onClick={onCancel} style={{ padding: "8px 16px", background: C.gris, border: `1px solid ${C.grisMedio}`, borderRadius: 10, cursor: "pointer", fontSize: 13, color: C.grisTexto, fontWeight: 600 }}>← Cancelar</button>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>        
         <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: C.texto, letterSpacing: "-0.03em" }}>{esEdicion ? "✏️ Corregir Registro" : "➕ Nuevo Registro"}</h1>
+        <button onClick={onCancel} style={{ padding: "8px 16px", background: C.rojo, border: `1px solid ${C.grisMedio}`, borderRadius: 10, cursor: "pointer", fontSize: 13, color: C.blanco, fontWeight: 600 }}>Cancelar</button>
       </div>
 
       {/* Stepper */}
@@ -125,7 +125,7 @@ export default function FormNuevoRegistro({ usuario, registros, onGuardar, onCan
         </div>
       )}
 
-      <div style={{ background: C.blanco, borderRadius: 14, padding: "28px 32px", border: `1px solid ${C.grisMedio}`, boxShadow: "0 1px 6px rgba(18,85,161,0.04)" }}>
+      <div style={{ background: C.blanco, borderRadius: 14, padding: "14px 32px", border: `1px solid ${C.grisMedio}`, boxShadow: "0 1px 6px rgba(18,85,161,0.04)" }}>
         {paso === 1 && (
           <div className="fade-in">
             <h3 style={{ fontSize: 16, fontWeight: 700, color: C.texto, margin: "0 0 20px" }}>Paso 1 — Datos del Beneficiario</h3>
@@ -208,7 +208,7 @@ export default function FormNuevoRegistro({ usuario, registros, onGuardar, onCan
         )}
 
         {/* Navigation */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 28, paddingTop: 20, borderTop: `1px solid ${C.grisMedio}` }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 28, paddingTop: 0, borderTop: `1px solid ${C.grisMedio}` }}>
           <button onClick={paso === 1 ? onCancel : anterior} style={{ padding: "10px 22px", background: C.azul, border: `1px solid ${C.grisMedio}`, borderRadius: 10, cursor: "pointer", fontSize: 14, color: C.blanco, fontWeight: 600 }}>{paso === 1 ? "Cancelar" : "← Anterior"}</button>
           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
             <span style={{ fontSize: 12, color: C.grisTexto }}>Paso {paso} de 4</span>

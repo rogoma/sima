@@ -78,7 +78,7 @@ export default function Sidebar({ usuario, vista, setVista, pendientes, onLogout
             onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.15)")}
             onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.08)")}
           >
-            ← Cerrar sesión
+            Cerrar sesión
           </button>
         </div>
       </div>
